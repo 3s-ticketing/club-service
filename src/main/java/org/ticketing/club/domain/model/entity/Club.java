@@ -1,4 +1,4 @@
-package org.ticketing.club.domain.model;
+package org.ticketing.club.domain.model.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
