@@ -2,9 +2,8 @@ package org.ticketing.club.domain.model.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
-import org.iimsa.common.domain.BaseEntity;
-import org.iimsa.common.exception.BadRequestException;
-import org.iimsa.common.exception.ForbiddenException;
+import org.ticketing.common.domain.BaseEntity;
+import org.ticketing.common.exception.BadRequestException;
 import org.ticketing.club.domain.exception.ClubExceptionMessage;
 
 import java.util.UUID;
