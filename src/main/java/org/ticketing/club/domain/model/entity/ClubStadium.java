@@ -1,10 +1,9 @@
 package org.ticketing.club.domain.model.entity;
 
 import jakarta.persistence.*;
+import jakarta.ws.rs.BadRequestException;
 import lombok.*;
 import org.ticketing.common.domain.BaseEntity;
-import org.ticketing.common.exception.BadRequestException;
-import org.ticketing.club.domain.exception.ClubExceptionMessage;
 
 import java.util.UUID;
 
@@ -40,7 +39,7 @@ public class ClubStadium extends BaseEntity {
 
     public static ClubStadium create(Club club, Stadium stadium) {
         if (club == null || stadium == null) {
-            throw new BadRequestException(ClubExceptionMessage.CLUB_STADIUM_REQUIRED);
+            throw new BadRequestException("클럽과 경기장은 필수입니다");
         }
 
         return ClubStadium.builder()

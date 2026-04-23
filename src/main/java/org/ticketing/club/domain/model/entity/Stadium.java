@@ -1,10 +1,10 @@
 package org.ticketing.club.domain.model.entity;
 
 import jakarta.persistence.*;
+import jakarta.ws.rs.BadRequestException;
 import lombok.*;
+import org.ticketing.club.domain.exception.StadiumAlreadyDeletedException;
 import org.ticketing.common.domain.BaseEntity;
-import org.ticketing.common.exception.BadRequestException;
-import org.ticketing.club.domain.exception.StadiumExceptionMessage;
 import org.ticketing.club.domain.model.vo.Address;
 
 import java.util.UUID;
@@ -40,27 +40,32 @@ public class Stadium extends BaseEntity {
     }
 
     public void update(String name, Address address) {
+        ensureNotDeleted();
         validate(name, address);
         this.name = name;
         this.address = address;
     }
 
     public void delete(String deletedBy) {
-        if (this.deletedAt != null) {
-            throw new BadRequestException(StadiumExceptionMessage.ALREADY_DELETED);
-        }
+        ensureNotDeleted();
         super.delete(deletedBy);
     }
 
-    private void validate(String name, Address address) {
+    private static void validate(String name, Address address) {
         if (name == null || name.isBlank()) {
-            throw new BadRequestException(StadiumExceptionMessage.EMPTY_NAME);
+            throw new BadRequestException("경기장 이름은 필수입니다.");
         }
         if (name.length() > 50) {
-            throw new BadRequestException(StadiumExceptionMessage.INVALID_NAME);
+            throw new BadRequestException("경기장 이름은 50자를 초과할 수 없습니다.");
         }
         if (address == null) {
-            throw new BadRequestException(StadiumExceptionMessage.EMPTY_ADDRESS);
+            throw new BadRequestException("주소는 필수입니다.");
+        }
+    }
+
+    private void ensureNotDeleted() {
+        if (this.deletedAt != null) {
+            throw new StadiumAlreadyDeletedException(this.id);
         }
     }
 }

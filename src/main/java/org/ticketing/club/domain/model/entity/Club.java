@@ -2,9 +2,9 @@ package org.ticketing.club.domain.model.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.ticketing.club.domain.exception.*;
 import org.ticketing.common.domain.BaseEntity;
 import org.ticketing.common.exception.BadRequestException;
-import org.ticketing.club.domain.exception.ClubExceptionMessage;
 
 import java.util.UUID;
 
@@ -39,33 +39,47 @@ public class Club extends BaseEntity {
                 .build();
     }
 
-    public void updateClub(String clubName, UUID adminId) {
-        if (this.deletedAt != null) {
-            throw new BadRequestException(ClubExceptionMessage.ALREADY_DELETED);
+    public void changeClubName(String clubName) {
+        ensureNotDeleted();
+        if (clubName == null || clubName.isBlank()) {
+            throw new BadRequestException("클럽명은 필수입니다");
+        }
+        if (clubName.length() > 50) {
+            throw new BadRequestException("클럽명은 50자를 초과할 수 없습니다");
         }
 
-        if (clubName != null && !clubName.isBlank()) {
-            this.clubName = clubName;
+        this.clubName = clubName;
+    }
+
+    public void changeAdmin(UUID adminId) {
+        ensureNotDeleted();
+        if (adminId == null) {
+            throw new BadRequestException("관리자 ID는 필수입니다");
         }
 
-        if (adminId != null) {
-            this.adminId = adminId;
-        }
+        this.adminId = adminId;
     }
 
     public void deleteClub(String deletedBy) {
-        if (this.deletedAt != null) {
-            throw new BadRequestException(ClubExceptionMessage.ALREADY_DELETED);
-        }
+        ensureNotDeleted();
         super.delete(deletedBy);
     }
 
     private static void validate(String clubName, UUID adminId) {
         if (clubName == null || clubName.isBlank()) {
-            throw new BadRequestException(ClubExceptionMessage.EMPTY_NAME);
+            throw new BadRequestException("클럽명은 필수입니다");
+        }
+        if (clubName.length() > 50) {
+            throw new BadRequestException("클럽명은 50자를 초과할 수 없습니다");
         }
         if (adminId == null) {
-            throw new BadRequestException(ClubExceptionMessage.EMPTY_ADMIN_ID);
+            throw new BadRequestException("관리자 ID는 필수입니다");
+        }
+    }
+
+    private void ensureNotDeleted() {
+        if (this.deletedAt != null) {
+            throw new ClubAlreadyDeletedException(this.id);
         }
     }
 }
