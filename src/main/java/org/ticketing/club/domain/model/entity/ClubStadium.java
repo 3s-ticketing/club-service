@@ -1,7 +1,6 @@
 package org.ticketing.club.domain.model.entity;
 
 import jakarta.persistence.*;
-import jakarta.ws.rs.BadRequestException;
 import lombok.*;
 import org.ticketing.club.domain.model.enums.ClubStadiumRole;
 import org.ticketing.common.domain.BaseEntity;

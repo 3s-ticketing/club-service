@@ -1,7 +1,6 @@
 package org.ticketing.club.presentation.dto.response;
 
 import org.ticketing.club.application.dto.result.StadiumResult;
-import org.ticketing.club.domain.model.vo.Address;
 
 import java.util.UUID;
 
