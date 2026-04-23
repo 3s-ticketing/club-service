@@ -56,6 +56,9 @@ public class Stadium extends BaseEntity {
         if (name == null || name.isBlank()) {
             throw new BadRequestException(StadiumExceptionMessage.EMPTY_NAME);
         }
+        if (name.length() > 50) {
+            throw new BadRequestException(StadiumExceptionMessage.INVALID_NAME);
+        }
         if (address == null) {
             throw new BadRequestException(StadiumExceptionMessage.EMPTY_ADDRESS);
         }

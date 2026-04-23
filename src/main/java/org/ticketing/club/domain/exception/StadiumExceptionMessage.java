@@ -7,6 +7,7 @@ public final class StadiumExceptionMessage {
     // 400
     public static final String EMPTY_NAME = "경기장명은 필수입니다.";
     public static final String EMPTY_ADDRESS = "주소는 필수입니다.";
+    public static final String INVALID_NAME = "경기장명이 유효하지 않습니다.";
 
     // 404
     public static final String NOT_FOUND = "경기장이 존재하지 않습니다.";
