@@ -5,7 +5,7 @@ import org.ticketing.club.domain.model.enums.ClubStadiumRole;
 import java.util.UUID;
 
 public record ClubStadiumResult(
-        UUID id,
+        UUID clubStadiumId,
         UUID clubId,
         UUID stadiumId,
         ClubStadiumRole role
