@@ -3,6 +3,8 @@ package org.ticketing.club.domain.model.entity;
 import jakarta.persistence.*;
 import lombok.*;
 import org.iimsa.common.domain.BaseEntity;
+import org.iimsa.common.exception.BadRequestException;
+import org.ticketing.club.domain.exception.StadiumExceptionMessage;
 import org.ticketing.club.domain.model.vo.Address;
 
 import java.util.UUID;
@@ -44,15 +46,18 @@ public class Stadium extends BaseEntity {
     }
 
     public void delete(String deletedBy) {
+        if (this.deletedAt != null) {
+            throw new BadRequestException(StadiumExceptionMessage.ALREADY_DELETED);
+        }
         super.delete(deletedBy);
     }
 
     private void validate(String name, Address address) {
         if (name == null || name.isBlank()) {
-            throw new IllegalArgumentException("경기장 이름은 필수입니다.");
+            throw new BadRequestException(StadiumExceptionMessage.EMPTY_NAME);
         }
         if (address == null) {
-            throw new IllegalArgumentException("주소는 필수입니다.");
+            throw new BadRequestException(StadiumExceptionMessage.EMPTY_ADDRESS);
         }
     }
 }
