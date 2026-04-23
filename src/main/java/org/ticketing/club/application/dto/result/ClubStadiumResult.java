@@ -1,12 +1,12 @@
-package org.ticketing.club.application.dto.command;
+package org.ticketing.club.application.dto.result;
 
 import org.ticketing.club.domain.model.enums.ClubStadiumRole;
 
 import java.util.UUID;
 
-public record CreateClubStadiumCommand(
+public record ClubStadiumResult(
+        UUID id,
         UUID clubId,
         UUID stadiumId,
         ClubStadiumRole role
-) {
-}
+) {}
