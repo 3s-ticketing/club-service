@@ -1,8 +1,9 @@
-package org.ticketing.club.domain.model;
+package org.ticketing.club.domain.model.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
 import org.iimsa.common.domain.BaseEntity;
+import org.ticketing.club.domain.model.vo.Address;
 
 import java.util.UUID;
 
@@ -19,52 +20,39 @@ public class Stadium extends BaseEntity {
     @Column(nullable = false, length = 50)
     private String name;
 
-    @Column(nullable = false, length = 255)
-    private String address;
+    @Embedded
+    private Address address;
 
     @Builder(access = AccessLevel.PRIVATE)
-    private Stadium(String name, String address) {
+    private Stadium(String name, Address address) {
+        validate(name, address);
         this.name = name;
         this.address = address;
     }
 
-    public static Stadium create(String name, String address) {
-        validate(name, address);
+    public static Stadium create(String name, Address address) {
         return Stadium.builder()
                 .name(name)
                 .address(address)
                 .build();
     }
 
-    public void update(String name, String address) {
-        if (name != null) {
-            validateName(name);
-            this.name = name;
-        }
-        if (address != null) {
-            validateAddress(address);
-            this.address = address;
-        }
+    public void update(String name, Address address) {
+        validate(name, address);
+        this.name = name;
+        this.address = address;
     }
 
-    public void deleteStadium(String deletedBy) {
+    public void delete(String deletedBy) {
         super.delete(deletedBy);
     }
 
-    private static void validate(String name, String address) {
-        validateName(name);
-        validateAddress(address);
-    }
-
-    private static void validateName(String name) {
+    private void validate(String name, Address address) {
         if (name == null || name.isBlank()) {
             throw new IllegalArgumentException("경기장 이름은 필수입니다.");
         }
-    }
-
-    private static void validateAddress(String address) {
-        if (address == null || address.isBlank()) {
-            throw new IllegalArgumentException("경기장 주소는 필수입니다.");
+        if (address == null) {
+            throw new IllegalArgumentException("주소는 필수입니다.");
         }
     }
 }
