@@ -3,11 +3,19 @@ package org.ticketing.club.domain.model.entity;
 import jakarta.persistence.*;
 import lombok.*;
 import org.iimsa.common.domain.BaseEntity;
+import org.iimsa.common.exception.BadRequestException;
+import org.ticketing.club.domain.exception.ClubExceptionMessage;
 
 import java.util.UUID;
 
 @Entity
-@Table(name = "p_club_stadium")
+@Table(
+        name = "p_club_stadium",
+        uniqueConstraints = @UniqueConstraint(
+                name = "uk_club_stadium_club_stadium",
+                columnNames = {"club_id", "stadium_id"}
+        )
+)
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class ClubStadium extends BaseEntity {
@@ -32,7 +40,7 @@ public class ClubStadium extends BaseEntity {
 
     public static ClubStadium create(Club club, Stadium stadium) {
         if (club == null || stadium == null) {
-            throw new IllegalArgumentException("club, stadium은 필수입니다.");
+            throw new BadRequestException(ClubExceptionMessage.CLUB_STADIUM_REQUIRED);
         }
 
         return ClubStadium.builder()
