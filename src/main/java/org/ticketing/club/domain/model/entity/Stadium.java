@@ -1,10 +1,10 @@
 package org.ticketing.club.domain.model.entity;
 
 import jakarta.persistence.*;
-import jakarta.ws.rs.BadRequestException;
 import lombok.*;
 import org.ticketing.club.domain.exception.StadiumAlreadyDeletedException;
 import org.ticketing.common.domain.BaseEntity;
+import org.ticketing.common.exception.BadRequestException;
 import org.ticketing.club.domain.model.vo.Address;
 
 import java.util.UUID;
