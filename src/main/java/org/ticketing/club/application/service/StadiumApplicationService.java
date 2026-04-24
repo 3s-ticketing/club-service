@@ -2,7 +2,10 @@ package org.ticketing.club.application.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import org.ticketing.club.presentation.dto.response.StadiumResponseDto;
+import org.ticketing.club.application.dto.command.CreateStadiumCommand;
+import org.ticketing.club.application.dto.command.DeleteStadiumCommand;
+import org.ticketing.club.application.dto.command.UpdateStadiumCommand;
+import org.ticketing.club.application.dto.result.StadiumResult;
 
 import java.util.List;
 import java.util.UUID;
@@ -11,23 +14,23 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class StadiumApplicationService {
 
-    public StadiumResponseDto createStadium(Object command) {
+    public StadiumResult createStadium(CreateStadiumCommand createStadiumCommand) {
         throw new UnsupportedOperationException("Not implemented yet");
     }
 
-    public StadiumResponseDto updateStadium(Object command) {
+    public StadiumResult updateStadium(UpdateStadiumCommand updateStadiumCommand) {
         throw new UnsupportedOperationException("Not implemented yet");
     }
 
-    public void deleteStadium(Object command) {
+    public void deleteStadium(DeleteStadiumCommand deleteStadiumCommand) {
         throw new UnsupportedOperationException("Not implemented yet");
     }
 
-    public List<StadiumResponseDto> getAllStadiums() {
+    public List<StadiumResult> getAllStadiums() {
         throw new UnsupportedOperationException("Not implemented yet");
     }
 
-    public StadiumResponseDto getStadium(UUID stadiumId) {
+    public StadiumResult getStadium(UUID stadiumId) {
         throw new UnsupportedOperationException("Not implemented yet");
     }
 

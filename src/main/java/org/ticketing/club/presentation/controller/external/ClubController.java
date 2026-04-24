@@ -41,7 +41,7 @@ public class ClubController {
     }
 
     @PatchMapping("/{clubId}/name")
-    public ClubResponseDto changeClubName(
+    public ClubResponseDto updateClubName(
             @PathVariable UUID clubId,
             @RequestBody UpdateClubNameRequestDto request
     ) {
@@ -49,7 +49,7 @@ public class ClubController {
     }
 
     @PatchMapping("/{clubId}/admin")
-    public ClubResponseDto changeClubAdmin(
+    public ClubResponseDto updateClubAdmin(
             @PathVariable UUID clubId,
             @RequestBody UpdateClubAdminRequestDto request
     ) {
