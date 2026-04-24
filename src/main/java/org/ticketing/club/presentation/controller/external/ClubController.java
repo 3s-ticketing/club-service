@@ -67,7 +67,7 @@ public class ClubController {
     }
 
     @PostMapping("/{clubId}/stadiums")
-    public void addStadium(
+    public ClubStadiumResponseDto addStadium(
             @PathVariable UUID clubId,
             @RequestBody CreateClubStadiumRequestDto request
     ) {
