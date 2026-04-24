@@ -2,7 +2,7 @@ package org.ticketing.club.application.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import org.ticketing.club.presentation.dto.response.ClubResponseDto;
+import org.ticketing.club.application.dto.result.ClubResult;
 
 import java.util.UUID;
 
@@ -10,19 +10,19 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class ClubApplicationService {
 
-    public ClubResponseDto createClub(Object command) {
+    public ClubResult createClub(Object command) {
         throw new UnsupportedOperationException("Not implemented yet");
     }
 
-    public ClubResponseDto getClub(UUID clubId) {
+    public ClubResult getClub(UUID clubId) {
         throw new UnsupportedOperationException("Not implemented yet");
     }
 
-    public ClubResponseDto changeClubName(Object command) {
+    public ClubResult changeClubName(Object command) {
         throw new UnsupportedOperationException("Not implemented yet");
     }
 
-    public ClubResponseDto changeClubAdmin(Object command) {
+    public ClubResult changeClubAdmin(Object command) {
         throw new UnsupportedOperationException("Not implemented yet");
     }
 
