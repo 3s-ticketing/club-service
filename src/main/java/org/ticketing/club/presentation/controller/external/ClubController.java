@@ -1,6 +1,10 @@
 package org.ticketing.club.presentation.controller.external;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.web.bind.annotation.*;
 import org.ticketing.club.application.service.ClubApplicationService;
 import org.ticketing.club.presentation.dto.request.*;
@@ -32,10 +36,9 @@ public class ClubController {
     }
 
     @GetMapping
-    public List<ClubResponseDto> getClubs(
-            @RequestParam(required = false) Object keyword,
-            @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "20") int size
+    public Page<ClubResponseDto> getClubs(
+            @RequestParam(required = false) String keyword,
+            @PageableDefault(size = 10, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable
     ) {
         throw new UnsupportedOperationException("Not implemented yet");
     }
@@ -58,8 +61,7 @@ public class ClubController {
 
     @DeleteMapping("/{clubId}")
     public void deleteClub(
-            @PathVariable UUID clubId,
-            @RequestParam(required = false) String deletedBy
+            @PathVariable UUID clubId
     ) {
         throw new UnsupportedOperationException("Not implemented yet");
     }
