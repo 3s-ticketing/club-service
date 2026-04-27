@@ -8,6 +8,7 @@ import org.ticketing.club.application.dto.command.DeleteClubCommand;
 import org.ticketing.club.application.dto.command.UpdateClubAdminCommand;
 import org.ticketing.club.application.dto.command.UpdateClubNameCommand;
 import org.ticketing.club.application.dto.result.ClubResult;
+import org.ticketing.club.domain.exception.ClubAlreadyDeletedException;
 import org.ticketing.club.domain.exception.ClubNotFoundException;
 import org.ticketing.club.domain.exception.DuplicateClubNameException;
 import org.ticketing.club.domain.exception.UserNotFoundException;
@@ -87,6 +88,10 @@ public class ClubApplicationService {
     public void deleteClub(DeleteClubCommand command) {
         Club club = clubRepository.findById(command.clubId())
                 .orElseThrow(() -> new ClubNotFoundException(command.clubId()));
+
+        if(club.getDeletedAt() != null) {
+            throw new ClubAlreadyDeletedException(command.clubId());
+        }
 
         club.deleteClub(command.deletedBy().toString());
     }
