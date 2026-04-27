@@ -11,4 +11,6 @@ public interface JpaStadiumRepository extends JpaRepository<Stadium, UUID> {
     Optional<Stadium> findByIdAndDeletedAtIsNull(UUID id);
 
     boolean existsByIdAndDeletedAtIsNull(UUID id);
+
+    boolean existsByNameAndDeletedAtIsNull(String name);
 }

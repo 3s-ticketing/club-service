@@ -28,4 +28,9 @@ public class StadiumRepositoryImpl implements StadiumRepository {
     public boolean existsById(UUID id) {
         return jpaStadiumRepository.existsByIdAndDeletedAtIsNull(id);
     }
+
+    @Override
+    public boolean existsByName(String name) {
+        return jpaStadiumRepository.existsByNameAndDeletedAtIsNull(name);
+    }
 }

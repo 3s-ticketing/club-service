@@ -2,10 +2,14 @@ package org.ticketing.club.application.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.ticketing.club.application.dto.command.CreateStadiumCommand;
 import org.ticketing.club.application.dto.command.DeleteStadiumCommand;
 import org.ticketing.club.application.dto.command.UpdateStadiumCommand;
 import org.ticketing.club.application.dto.result.StadiumResult;
+import org.ticketing.club.domain.exception.DuplicateStadiumNameException;
+import org.ticketing.club.domain.model.entity.Stadium;
+import org.ticketing.club.domain.repository.StadiumRepository;
 
 import java.util.List;
 import java.util.UUID;
@@ -14,8 +18,20 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class StadiumApplicationService {
 
-    public StadiumResult createStadium(CreateStadiumCommand createStadiumCommand) {
-        throw new UnsupportedOperationException("Not implemented yet");
+    private final StadiumRepository stadiumRepository;
+
+    @Transactional
+    public StadiumResult createStadium(CreateStadiumCommand command) {
+        if (stadiumRepository.existsByName(command.name())) {
+            throw new DuplicateStadiumNameException(command.name());
+        }
+
+        Stadium stadium = Stadium.create(
+                command.name(),
+                command.address()
+        );
+
+        return StadiumResult.from(stadiumRepository.save(stadium));
     }
 
     public StadiumResult updateStadium(UpdateStadiumCommand updateStadiumCommand) {

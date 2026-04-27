@@ -11,4 +11,6 @@ public interface StadiumRepository {
     Optional<Stadium> findById(UUID id);
 
     boolean existsById(UUID id);
+
+    boolean existsByName(String name);
 }
