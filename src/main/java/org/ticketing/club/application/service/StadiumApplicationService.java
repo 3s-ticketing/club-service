@@ -1,6 +1,8 @@
 package org.ticketing.club.application.service;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.ticketing.club.application.dto.command.CreateStadiumCommand;
@@ -12,7 +14,6 @@ import org.ticketing.club.domain.exception.StadiumNotFoundException;
 import org.ticketing.club.domain.model.entity.Stadium;
 import org.ticketing.club.domain.repository.StadiumRepository;
 
-import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -61,8 +62,10 @@ public class StadiumApplicationService {
         stadium.delete(command.deletedBy().toString());
     }
 
-    public List<StadiumResult> getAllStadiums() {
-        throw new UnsupportedOperationException("Not implemented yet");
+    @Transactional(readOnly = true)
+    public Page<StadiumResult> getStadiums(String keyword, Pageable pageable) {
+        return stadiumRepository.findAll(keyword, pageable)
+                .map(StadiumResult::from);
     }
 
     @Transactional(readOnly = true)

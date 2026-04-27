@@ -1,10 +1,13 @@
 package org.ticketing.club.infrastructure.persistence;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 import org.ticketing.club.domain.model.entity.Stadium;
 import org.ticketing.club.domain.repository.StadiumRepository;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -32,5 +35,10 @@ public class StadiumRepositoryImpl implements StadiumRepository {
     @Override
     public boolean existsByName(String name) {
         return jpaStadiumRepository.existsByNameAndDeletedAtIsNull(name);
+    }
+
+    @Override
+    public Page<Stadium> findAll(String keyword, Pageable pageable) {
+        return jpaStadiumRepository.searchStadiums(keyword, pageable);
     }
 }
