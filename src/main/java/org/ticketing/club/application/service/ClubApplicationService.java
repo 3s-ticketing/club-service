@@ -5,16 +5,16 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.ticketing.club.application.dto.command.CreateClubCommand;
-import org.ticketing.club.application.dto.command.DeleteClubCommand;
-import org.ticketing.club.application.dto.command.UpdateClubAdminCommand;
-import org.ticketing.club.application.dto.command.UpdateClubNameCommand;
+import org.ticketing.club.application.dto.command.*;
 import org.ticketing.club.application.dto.result.ClubResult;
-import org.ticketing.club.domain.exception.ClubNotFoundException;
-import org.ticketing.club.domain.exception.DuplicateClubNameException;
-import org.ticketing.club.domain.exception.UserNotFoundException;
+import org.ticketing.club.application.dto.result.ClubStadiumResult;
+import org.ticketing.club.domain.exception.*;
 import org.ticketing.club.domain.model.entity.Club;
+import org.ticketing.club.domain.model.entity.ClubStadium;
+import org.ticketing.club.domain.model.entity.Stadium;
 import org.ticketing.club.domain.repository.ClubRepository;
+import org.ticketing.club.domain.repository.ClubStadiumRepository;
+import org.ticketing.club.domain.repository.StadiumRepository;
 import org.ticketing.club.domain.service.UserProvider;
 
 import java.util.UUID;
@@ -24,6 +24,8 @@ import java.util.UUID;
 public class ClubApplicationService {
 
     private final ClubRepository clubRepository;
+    private final StadiumRepository stadiumRepository;
+    private final ClubStadiumRepository clubStadiumRepository;
     private final UserProvider userProvider;
 
     @Transactional
@@ -32,9 +34,9 @@ public class ClubApplicationService {
             throw new DuplicateClubNameException(command.clubName());
         }
 
-//        if(!userProvider.existsById(command.adminId())) {
-//            throw new UserNotFoundException(command.adminId());
-//        }
+        if(!userProvider.existsById(command.adminId())) {
+            throw new UserNotFoundException(command.adminId());
+        }
 
         Club club = Club.create(
                 command.clubName(),
@@ -57,6 +59,7 @@ public class ClubApplicationService {
                 .map(ClubResult::from);
     }
 
+    @Transactional
     public ClubResult updateClubName(UpdateClubNameCommand command) {
         Club club = clubRepository.findById(command.clubId())
                 .orElseThrow(() -> new ClubNotFoundException(command.clubId()));
