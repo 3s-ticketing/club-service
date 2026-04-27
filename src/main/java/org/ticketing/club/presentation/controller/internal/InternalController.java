@@ -29,11 +29,11 @@ public class InternalController {
 
     @GetMapping("/stadiums/{stadiumId}")
     public StadiumResponseDto getStadium(@PathVariable UUID stadiumId) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        return StadiumResponseDto.from(stadiumService.getStadium(stadiumId));
     }
 
     @GetMapping("/stadiums/{stadiumId}/exists")
     public boolean existsStadium(@PathVariable UUID stadiumId) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        return stadiumService.existsById(stadiumId);
     }
 }

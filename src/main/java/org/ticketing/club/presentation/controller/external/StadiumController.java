@@ -2,13 +2,12 @@ package org.ticketing.club.presentation.controller.external;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.ticketing.club.application.service.StadiumApplicationService;
 import org.ticketing.club.presentation.dto.request.CreateStadiumRequestDto;
 import org.ticketing.club.presentation.dto.response.StadiumResponseDto;
+
+import java.util.UUID;
 
 @RestController
 @RequiredArgsConstructor
@@ -22,5 +21,12 @@ public class StadiumController {
             @RequestBody @Valid CreateStadiumRequestDto request
     ) {
         return StadiumResponseDto.from(stadiumService.createStadium(request.toCommand()));
+    }
+
+    @GetMapping("/{stadiumId}")
+    public StadiumResponseDto getStadium(
+            @PathVariable UUID stadiumId
+    ) {
+        return StadiumResponseDto.from(stadiumService.getStadium(stadiumId));
     }
 }

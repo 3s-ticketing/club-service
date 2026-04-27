@@ -8,6 +8,7 @@ import org.ticketing.club.application.dto.command.DeleteStadiumCommand;
 import org.ticketing.club.application.dto.command.UpdateStadiumCommand;
 import org.ticketing.club.application.dto.result.StadiumResult;
 import org.ticketing.club.domain.exception.DuplicateStadiumNameException;
+import org.ticketing.club.domain.exception.StadiumNotFoundException;
 import org.ticketing.club.domain.model.entity.Stadium;
 import org.ticketing.club.domain.repository.StadiumRepository;
 
@@ -46,11 +47,15 @@ public class StadiumApplicationService {
         throw new UnsupportedOperationException("Not implemented yet");
     }
 
+    @Transactional(readOnly = true)
     public StadiumResult getStadium(UUID stadiumId) {
-        throw new UnsupportedOperationException("Not implemented yet");
+        Stadium stadium = stadiumRepository.findById(stadiumId)
+                .orElseThrow(() -> new StadiumNotFoundException(stadiumId));
+        return StadiumResult.from(stadium);
     }
 
+    @Transactional(readOnly = true)
     public boolean existsById(UUID stadiumId) {
-        throw new UnsupportedOperationException("Not implemented yet");
+        return stadiumRepository.existsById(stadiumId);
     }
 }
