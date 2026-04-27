@@ -71,6 +71,11 @@ public class Club extends BaseEntity {
         return ClubStadium.create(this, stadium, role);
     }
 
+    public void removeStadium(ClubStadium clubStadium, String deletedBy) {
+        ensureNotDeleted();
+        clubStadium.delete(deletedBy);
+    }
+
     private static void validate(String clubName, UUID adminId) {
         if (clubName == null || clubName.isBlank()) {
             throw new BadRequestException("클럽명은 필수입니다");
