@@ -62,7 +62,8 @@ public class ClubApplicationService {
         throw new UnsupportedOperationException("Not implemented yet");
     }
 
+    @Transactional(readOnly = true)
     public boolean existsById(UUID clubId) {
-        throw new UnsupportedOperationException("Not implemented yet");
+        return clubRepository.findById(clubId).isPresent();
     }
 }

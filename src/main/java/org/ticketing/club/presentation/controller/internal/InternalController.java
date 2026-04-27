@@ -19,12 +19,12 @@ public class InternalController {
 
     @GetMapping("/clubs/{clubId}")
     public ClubResponseDto getClub(@PathVariable UUID clubId) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        return ClubResponseDto.from(clubService.getClub(clubId));
     }
 
     @GetMapping("/clubs/{clubId}/exists")
     public boolean existsClub(@PathVariable UUID clubId) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        return clubService.existsById(clubId);
     }
 
     @GetMapping("/stadiums/{stadiumId}")
