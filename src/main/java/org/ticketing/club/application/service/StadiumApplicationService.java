@@ -53,8 +53,12 @@ public class StadiumApplicationService {
         return StadiumResult.from(stadium);
     }
 
-    public void deleteStadium(DeleteStadiumCommand deleteStadiumCommand) {
-        throw new UnsupportedOperationException("Not implemented yet");
+    @Transactional
+    public void deleteStadium(DeleteStadiumCommand command) {
+        Stadium stadium = stadiumRepository.findById(command.stadiumId())
+                .orElseThrow(() -> new StadiumNotFoundException(command.stadiumId()));
+
+        stadium.delete(command.deletedBy().toString());
     }
 
     public List<StadiumResult> getAllStadiums() {
