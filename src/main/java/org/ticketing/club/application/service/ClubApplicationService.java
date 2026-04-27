@@ -78,8 +78,12 @@ public class ClubApplicationService {
         return ClubResult.from(club);
     }
 
-    public void deleteClub(DeleteClubCommand deleteClubCommand) {
-        throw new UnsupportedOperationException("Not implemented yet");
+    @Transactional
+    public void deleteClub(DeleteClubCommand command) {
+        Club club = clubRepository.findById(command.clubId())
+                .orElseThrow(() -> new ClubNotFoundException(command.clubId()));
+
+        club.deleteClub(command.deletedBy().toString());
     }
 
     @Transactional(readOnly = true)

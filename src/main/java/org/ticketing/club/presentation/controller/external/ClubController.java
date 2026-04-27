@@ -6,6 +6,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.web.bind.annotation.*;
+import org.ticketing.club.application.dto.command.DeleteClubCommand;
 import org.ticketing.club.application.service.ClubApplicationService;
 import org.ticketing.club.presentation.dto.request.*;
 import org.ticketing.club.presentation.dto.response.ClubResponseDto;
@@ -61,9 +62,10 @@ public class ClubController {
 
     @DeleteMapping("/{clubId}")
     public void deleteClub(
-            @PathVariable UUID clubId
+            @PathVariable UUID clubId,
+            @RequestParam UUID userId // 임시 추가(삭제를 수행하는 유저 ID)
     ) {
-        throw new UnsupportedOperationException("Not implemented yet");
+        clubService.deleteClub(new DeleteClubCommand(clubId, userId));
     }
 
     @PostMapping("/{clubId}/stadiums")
