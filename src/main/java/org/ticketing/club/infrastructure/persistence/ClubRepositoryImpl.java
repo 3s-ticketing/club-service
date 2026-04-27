@@ -1,6 +1,8 @@
 package org.ticketing.club.infrastructure.persistence;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 import org.ticketing.club.domain.model.entity.Club;
 import org.ticketing.club.domain.repository.ClubRepository;
@@ -31,5 +33,10 @@ public class ClubRepositoryImpl implements ClubRepository {
     @Override
     public boolean existsById(UUID id) {
         return jpaClubRepository.existsByIdAndDeletedAtIsNull(id);
+    }
+
+    @Override
+    public Page<Club> findAll(String keyword, Pageable pageable) {
+        return jpaClubRepository.searchClubs(keyword, pageable);
     }
 }

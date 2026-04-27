@@ -1,6 +1,8 @@
 package org.ticketing.club.application.service;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.ticketing.club.application.dto.command.CreateClubCommand;
@@ -30,9 +32,9 @@ public class ClubApplicationService {
             throw new DuplicateClubNameException(command.clubName());
         }
 
-        if(!userProvider.existsById(command.adminId())) {
-            throw new UserNotFoundException(command.adminId());
-        }
+//        if(!userProvider.existsById(command.adminId())) {
+//            throw new UserNotFoundException(command.adminId());
+//        }
 
         Club club = Club.create(
                 command.clubName(),
@@ -49,7 +51,12 @@ public class ClubApplicationService {
         return ClubResult.from(club);
     }
 
-    @Transactional
+    @Transactional(readOnly = true)
+    public Page<ClubResult> getClubs(String keyword, Pageable pageable) {
+        return clubRepository.findAll(keyword, pageable)
+                .map(ClubResult::from);
+    }
+
     public ClubResult updateClubName(UpdateClubNameCommand command) {
         Club club = clubRepository.findById(command.clubId())
                 .orElseThrow(() -> new ClubNotFoundException(command.clubId()));
