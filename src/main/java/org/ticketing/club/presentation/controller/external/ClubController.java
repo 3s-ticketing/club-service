@@ -7,6 +7,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.web.bind.annotation.*;
 import org.ticketing.club.application.dto.command.DeleteClubCommand;
+import org.ticketing.club.application.dto.command.DeleteClubStadiumCommand;
 import org.ticketing.club.application.service.ClubApplicationService;
 import org.ticketing.club.presentation.dto.request.*;
 import org.ticketing.club.presentation.dto.response.ClubResponseDto;
@@ -80,9 +81,10 @@ public class ClubController {
     @DeleteMapping("/{clubId}/stadiums/{stadiumId}")
     public void removeStadium(
             @PathVariable UUID clubId,
-            @PathVariable UUID stadiumId
+            @PathVariable UUID stadiumId,
+            @RequestParam UUID userId
     ) {
-        throw new UnsupportedOperationException("Not implemented yet");
+        clubService.removeStadium(new DeleteClubStadiumCommand(clubId, stadiumId, userId));
     }
 
     @GetMapping("/{clubId}/stadiums")

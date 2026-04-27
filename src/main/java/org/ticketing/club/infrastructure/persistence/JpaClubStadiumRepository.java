@@ -4,6 +4,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.ticketing.club.domain.model.entity.ClubStadium;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 public interface JpaClubStadiumRepository extends JpaRepository<ClubStadium, UUID> {
@@ -11,4 +12,6 @@ public interface JpaClubStadiumRepository extends JpaRepository<ClubStadium, UUI
     boolean existsByClubIdAndStadiumIdAndDeletedAtIsNull(UUID clubId, UUID stadiumId);
 
     List<ClubStadium> findAllByClubIdAndDeletedAtIsNull(UUID clubId);
+
+    Optional<ClubStadium> findByClubIdAndStadiumIdAndDeletedAtIsNull(UUID clubId, UUID stadiumId);
 }

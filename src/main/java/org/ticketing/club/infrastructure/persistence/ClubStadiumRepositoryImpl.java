@@ -6,6 +6,7 @@ import org.ticketing.club.domain.model.entity.ClubStadium;
 import org.ticketing.club.domain.repository.ClubStadiumRepository;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @Repository
@@ -27,5 +28,10 @@ public class ClubStadiumRepositoryImpl implements ClubStadiumRepository {
     @Override
     public List<ClubStadium> findAllByClubId(UUID clubId) {
         return jpaClubStadiumRepository.findAllByClubIdAndDeletedAtIsNull(clubId);
+    }
+
+    @Override
+    public Optional<ClubStadium> findByClubIdAndStadiumId(UUID clubId, UUID stadiumId) {
+        return jpaClubStadiumRepository.findByClubIdAndStadiumIdAndDeletedAtIsNull(clubId, stadiumId);
     }
 }

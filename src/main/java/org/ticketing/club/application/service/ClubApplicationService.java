@@ -16,6 +16,7 @@ import org.ticketing.club.domain.repository.ClubRepository;
 import org.ticketing.club.domain.repository.ClubStadiumRepository;
 import org.ticketing.club.domain.repository.StadiumRepository;
 import org.ticketing.club.domain.service.UserProvider;
+import org.ticketing.common.exception.BadRequestException;
 
 import java.util.List;
 import java.util.UUID;
@@ -127,5 +128,16 @@ public class ClubApplicationService {
         return clubStadiumRepository.findAllByClubId(clubId).stream()
                 .map(ClubStadiumResult::from)
                 .toList();
+    }
+
+    @Transactional
+    public void removeStadium(DeleteClubStadiumCommand command) {
+        Club club = clubRepository.findById(command.clubId())
+                .orElseThrow(() -> new ClubNotFoundException(command.clubId()));
+
+        ClubStadium clubStadium = clubStadiumRepository.findByClubIdAndStadiumId(command.clubId(), command.stadiumId())
+                .orElseThrow(() -> new ClubStadiumNotFoundException(command.clubId(), command.stadiumId()));
+
+        club.removeStadium(clubStadium, command.deletedBy().toString());
     }
 }
