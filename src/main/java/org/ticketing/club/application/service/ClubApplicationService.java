@@ -17,6 +17,7 @@ import org.ticketing.club.domain.repository.ClubStadiumRepository;
 import org.ticketing.club.domain.repository.StadiumRepository;
 import org.ticketing.club.domain.service.UserProvider;
 
+import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -115,5 +116,16 @@ public class ClubApplicationService {
         ClubStadium clubStadium = club.addStadium(stadium, command.role());
 
         return ClubStadiumResult.from(clubStadiumRepository.save(clubStadium));
+    }
+
+    @Transactional(readOnly = true)
+    public List<ClubStadiumResult> getClubStadiums(UUID clubId) {
+        if (!clubRepository.existsById(clubId)) {
+            throw new ClubNotFoundException(clubId);
+        }
+
+        return clubStadiumRepository.findAllByClubId(clubId).stream()
+                .map(ClubStadiumResult::from)
+                .toList();
     }
 }

@@ -87,6 +87,8 @@ public class ClubController {
 
     @GetMapping("/{clubId}/stadiums")
     public List<ClubStadiumResponseDto> getClubStadiums(@PathVariable UUID clubId) {
-        throw new UnsupportedOperationException("Not implemented yet");
+        return clubService.getClubStadiums(clubId).stream()
+                .map(ClubStadiumResponseDto::from)
+                .toList();
     }
 }
