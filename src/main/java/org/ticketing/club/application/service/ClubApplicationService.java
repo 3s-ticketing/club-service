@@ -50,12 +50,32 @@ public class ClubApplicationService {
         return ClubResult.from(club);
     }
 
-    public ClubResult updateClubName(UpdateClubNameCommand updateClubNameCommand) {
-        throw new UnsupportedOperationException("Not implemented yet");
+    @Transactional
+    public ClubResult updateClubName(UpdateClubNameCommand command) {
+        Club club = clubRepository.findById(command.clubId())
+                .orElseThrow(() -> new ClubNotFoundException(command.clubId()));
+
+        if (clubRepository.existsByClubName(command.clubName())) {
+            throw new BadRequestException("이미 존재하는 클럽명입니다.");
+        }
+
+        club.changeClubName(command.clubName());
+
+        return ClubResult.from(club);
     }
 
-    public ClubResult updateClubAdmin(UpdateClubAdminCommand updateClubAdminCommand) {
-        throw new UnsupportedOperationException("Not implemented yet");
+    @Transactional
+    public ClubResult updateClubAdmin(UpdateClubAdminCommand command) {
+        Club club = clubRepository.findById(command.clubId())
+                .orElseThrow(() -> new ClubNotFoundException(command.clubId()));
+
+        if (!userProvider.existsById(command.adminId())) {
+            throw new UserNotFoundException(command.adminId());
+        }
+
+        club.changeAdmin(command.adminId());
+
+        return ClubResult.from(club);
     }
 
     public void deleteClub(DeleteClubCommand deleteClubCommand) {

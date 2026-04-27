@@ -48,7 +48,7 @@ public class ClubController {
             @PathVariable UUID clubId,
             @RequestBody UpdateClubNameRequestDto request
     ) {
-        throw new UnsupportedOperationException("Not implemented yet");
+        return ClubResponseDto.from(clubService.updateClubName(request.toCommand(clubId)));
     }
 
     @PatchMapping("/{clubId}/admin")
@@ -56,7 +56,7 @@ public class ClubController {
             @PathVariable UUID clubId,
             @RequestBody UpdateClubAdminRequestDto request
     ) {
-        throw new UnsupportedOperationException("Not implemented yet");
+        return ClubResponseDto.from(clubService.updateClubAdmin(request.toCommand(clubId)));
     }
 
     @DeleteMapping("/{clubId}")
