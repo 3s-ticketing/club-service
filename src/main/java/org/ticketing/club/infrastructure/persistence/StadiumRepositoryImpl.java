@@ -7,7 +7,6 @@ import org.springframework.stereotype.Repository;
 import org.ticketing.club.domain.model.entity.Stadium;
 import org.ticketing.club.domain.repository.StadiumRepository;
 
-import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
