@@ -35,8 +35,22 @@ public class StadiumApplicationService {
         return StadiumResult.from(stadiumRepository.save(stadium));
     }
 
-    public StadiumResult updateStadium(UpdateStadiumCommand updateStadiumCommand) {
-        throw new UnsupportedOperationException("Not implemented yet");
+    @Transactional
+    public StadiumResult updateStadium(UpdateStadiumCommand command) {
+        Stadium stadium = stadiumRepository.findById(command.stadiumId())
+                .orElseThrow(() -> new StadiumNotFoundException(command.stadiumId()));
+
+        // 이름이 변경되었을 경우에만 중복 체크
+        if (!stadium.getName().equals(command.name()) && stadiumRepository.existsByName(command.name())) {
+            throw new DuplicateStadiumNameException(command.name());
+        }
+
+        stadium.update(
+                command.name(),
+                command.address()
+        );
+
+        return StadiumResult.from(stadium);
     }
 
     public void deleteStadium(DeleteStadiumCommand deleteStadiumCommand) {

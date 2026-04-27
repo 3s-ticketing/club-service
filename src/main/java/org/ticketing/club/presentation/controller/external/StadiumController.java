@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 import org.ticketing.club.application.service.StadiumApplicationService;
 import org.ticketing.club.presentation.dto.request.CreateStadiumRequestDto;
+import org.ticketing.club.presentation.dto.request.UpdateStadiumRequestDto;
 import org.ticketing.club.presentation.dto.response.StadiumResponseDto;
 
 import java.util.UUID;
@@ -28,5 +29,13 @@ public class StadiumController {
             @PathVariable UUID stadiumId
     ) {
         return StadiumResponseDto.from(stadiumService.getStadium(stadiumId));
+    }
+
+    @PutMapping("/{stadiumId}")
+    public StadiumResponseDto updateStadium(
+            @PathVariable UUID stadiumId,
+            @RequestBody @Valid UpdateStadiumRequestDto request
+    ) {
+        return StadiumResponseDto.from(stadiumService.updateStadium(request.toCommand(stadiumId)));
     }
 }
