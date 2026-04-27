@@ -47,6 +47,10 @@ public class ClubApplicationService {
         Club club = clubRepository.findById(clubId)
                 .orElseThrow(() -> new ClubNotFoundException(clubId));
 
+        if (club.getDeletedAt() != null) {
+            throw new ClubNotFoundException(clubId);
+        }
+
         return ClubResult.from(club);
     }
 
@@ -88,6 +92,8 @@ public class ClubApplicationService {
 
     @Transactional(readOnly = true)
     public boolean existsById(UUID clubId) {
-        return clubRepository.findById(clubId).isPresent();
+        return clubRepository.findById(clubId)
+                .map(club -> club.getDeletedAt() == null)
+                .orElse(false);
     }
 }
