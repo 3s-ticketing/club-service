@@ -3,6 +3,7 @@ package org.ticketing.club.domain.model.entity;
 import jakarta.persistence.*;
 import lombok.*;
 import org.ticketing.club.domain.exception.*;
+import org.ticketing.club.domain.model.enums.ClubStadiumRole;
 import org.ticketing.common.domain.BaseEntity;
 import org.ticketing.common.exception.BadRequestException;
 
@@ -63,6 +64,11 @@ public class Club extends BaseEntity {
     public void deleteClub(String deletedBy) {
         ensureNotDeleted();
         super.delete(deletedBy);
+    }
+
+    public ClubStadium addStadium(Stadium stadium, ClubStadiumRole role) {
+        ensureNotDeleted();
+        return ClubStadium.create(this, stadium, role);
     }
 
     private static void validate(String clubName, UUID adminId) {
