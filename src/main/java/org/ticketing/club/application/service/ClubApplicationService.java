@@ -9,6 +9,7 @@ import org.ticketing.club.application.dto.command.UpdateClubAdminCommand;
 import org.ticketing.club.application.dto.command.UpdateClubNameCommand;
 import org.ticketing.club.application.dto.result.ClubResult;
 import org.ticketing.club.domain.exception.ClubNotFoundException;
+import org.ticketing.club.domain.exception.DuplicateClubNameException;
 import org.ticketing.club.domain.exception.UserNotFoundException;
 import org.ticketing.club.domain.model.entity.Club;
 import org.ticketing.club.domain.repository.ClubRepository;
@@ -27,7 +28,7 @@ public class ClubApplicationService {
     @Transactional
     public ClubResult createClub(CreateClubCommand command) {
         if (clubRepository.existsByClubName(command.clubName())) {
-            throw new BadRequestException("이미 존재하는 클럽명입니다.");
+            throw new DuplicateClubNameException(command.clubName());
         }
 
         if(!userProvider.existsById(command.adminId())) {
@@ -60,7 +61,7 @@ public class ClubApplicationService {
                 .orElseThrow(() -> new ClubNotFoundException(command.clubId()));
 
         if (clubRepository.existsByClubName(command.clubName())) {
-            throw new BadRequestException("이미 존재하는 클럽명입니다.");
+            throw new DuplicateClubNameException(command.clubName());
         }
 
         club.changeClubName(command.clubName());
