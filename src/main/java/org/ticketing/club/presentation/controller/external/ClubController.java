@@ -32,7 +32,7 @@ public class ClubController {
     public ClubResponseDto getClub(
             @PathVariable UUID clubId
     ) {
-        throw new UnsupportedOperationException("Not implemented yet");
+        return ClubResponseDto.from(clubService.getClub(clubId));
     }
 
     @GetMapping

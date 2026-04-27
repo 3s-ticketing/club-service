@@ -8,6 +8,7 @@ import org.ticketing.club.application.dto.command.DeleteClubCommand;
 import org.ticketing.club.application.dto.command.UpdateClubAdminCommand;
 import org.ticketing.club.application.dto.command.UpdateClubNameCommand;
 import org.ticketing.club.application.dto.result.ClubResult;
+import org.ticketing.club.domain.exception.ClubNotFoundException;
 import org.ticketing.club.domain.exception.UserNotFoundException;
 import org.ticketing.club.domain.model.entity.Club;
 import org.ticketing.club.domain.repository.ClubRepository;
@@ -41,8 +42,12 @@ public class ClubApplicationService {
         return ClubResult.from(clubRepository.save(club));
     }
 
+    @Transactional(readOnly = true)
     public ClubResult getClub(UUID clubId) {
-        throw new UnsupportedOperationException("Not implemented yet");
+        Club club = clubRepository.findById(clubId)
+                .orElseThrow(() -> new ClubNotFoundException(clubId));
+
+        return ClubResult.from(club);
     }
 
     public ClubResult updateClubName(UpdateClubNameCommand updateClubNameCommand) {
