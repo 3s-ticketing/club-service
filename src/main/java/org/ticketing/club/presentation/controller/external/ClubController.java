@@ -74,7 +74,7 @@ public class ClubController {
             @PathVariable UUID clubId,
             @RequestBody CreateClubStadiumRequestDto request
     ) {
-        throw new UnsupportedOperationException("Not implemented yet");
+        return ClubStadiumResponseDto.from(clubService.addStadium(request.toCommand(clubId)));
     }
 
     @DeleteMapping("/{clubId}/stadiums/{stadiumId}")

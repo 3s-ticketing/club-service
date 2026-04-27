@@ -99,4 +99,21 @@ public class ClubApplicationService {
     public boolean existsById(UUID clubId) {
         return clubRepository.existsById(clubId);
     }
+
+    @Transactional
+    public ClubStadiumResult addStadium(CreateClubStadiumCommand command) {
+        Club club = clubRepository.findById(command.clubId())
+                .orElseThrow(() -> new ClubNotFoundException(command.clubId()));
+
+        Stadium stadium = stadiumRepository.findById(command.stadiumId())
+                .orElseThrow(() -> new StadiumNotFoundException(command.stadiumId()));
+
+        if (clubStadiumRepository.existsByClubIdAndStadiumId(command.clubId(), command.stadiumId())) {
+            throw new DuplicateClubStadiumMappingException();
+        }
+
+        ClubStadium clubStadium = club.addStadium(stadium, command.role());
+
+        return ClubStadiumResult.from(clubStadiumRepository.save(clubStadium));
+    }
 }
