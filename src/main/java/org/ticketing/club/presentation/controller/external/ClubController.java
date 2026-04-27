@@ -25,7 +25,7 @@ public class ClubController {
     public ClubResponseDto createClub(
             @RequestBody CreateClubRequestDto request
     ) {
-        throw new UnsupportedOperationException("Not implemented yet");
+        return ClubResponseDto.from(clubService.createClub(request.toCommand()));
     }
 
     @GetMapping("/{clubId}")
