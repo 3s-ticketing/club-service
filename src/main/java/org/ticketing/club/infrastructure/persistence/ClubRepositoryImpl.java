@@ -20,11 +20,16 @@ public class ClubRepositoryImpl implements ClubRepository {
 
     @Override
     public boolean existsByClubName(String clubName) {
-        return jpaClubRepository.existsByClubName(clubName);
+        return jpaClubRepository.existsByClubNameAndDeletedAtIsNull(clubName);
     }
 
     @Override
     public Optional<Club> findById(UUID id) {
-        return jpaClubRepository.findById(id);
+        return jpaClubRepository.findByIdAndDeletedAtIsNull(id);
+    }
+
+    @Override
+    public boolean existsById(UUID id) {
+        return jpaClubRepository.existsByIdAndDeletedAtIsNull(id);
     }
 }

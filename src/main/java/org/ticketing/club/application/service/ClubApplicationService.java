@@ -8,14 +8,12 @@ import org.ticketing.club.application.dto.command.DeleteClubCommand;
 import org.ticketing.club.application.dto.command.UpdateClubAdminCommand;
 import org.ticketing.club.application.dto.command.UpdateClubNameCommand;
 import org.ticketing.club.application.dto.result.ClubResult;
-import org.ticketing.club.domain.exception.ClubAlreadyDeletedException;
 import org.ticketing.club.domain.exception.ClubNotFoundException;
 import org.ticketing.club.domain.exception.DuplicateClubNameException;
 import org.ticketing.club.domain.exception.UserNotFoundException;
 import org.ticketing.club.domain.model.entity.Club;
 import org.ticketing.club.domain.repository.ClubRepository;
 import org.ticketing.club.domain.service.UserProvider;
-import org.ticketing.common.exception.BadRequestException;
 
 import java.util.UUID;
 
@@ -48,11 +46,6 @@ public class ClubApplicationService {
     public ClubResult getClub(UUID clubId) {
         Club club = clubRepository.findById(clubId)
                 .orElseThrow(() -> new ClubNotFoundException(clubId));
-
-        if (club.getDeletedAt() != null) {
-            throw new ClubNotFoundException(clubId);
-        }
-
         return ClubResult.from(club);
     }
 
@@ -89,17 +82,11 @@ public class ClubApplicationService {
         Club club = clubRepository.findById(command.clubId())
                 .orElseThrow(() -> new ClubNotFoundException(command.clubId()));
 
-        if(club.getDeletedAt() != null) {
-            throw new ClubAlreadyDeletedException(command.clubId());
-        }
-
         club.deleteClub(command.deletedBy().toString());
     }
 
     @Transactional(readOnly = true)
     public boolean existsById(UUID clubId) {
-        return clubRepository.findById(clubId)
-                .map(club -> club.getDeletedAt() == null)
-                .orElse(false);
+        return clubRepository.existsById(clubId);
     }
 }

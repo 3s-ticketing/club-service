@@ -12,4 +12,6 @@ public interface ClubRepository {
     boolean existsByClubName(String clubName);
 
     Optional<Club> findById(UUID id);
+
+    boolean existsById(UUID id);
 }
