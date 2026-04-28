@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.*;
 import org.ticketing.club.domain.model.enums.ClubStadiumRole;
 import org.ticketing.common.domain.BaseEntity;
+import org.ticketing.common.exception.BadRequestException;
 
 import java.util.UUID;
 
@@ -52,5 +53,16 @@ public class ClubStadium extends BaseEntity {
                 .stadium(stadium)
                 .role(role)
                 .build();
+    }
+
+    public void delete(String deletedBy) {
+        ensureNotDeleted();
+        super.delete(deletedBy);
+    }
+
+    private void ensureNotDeleted() {
+        if (this.deletedAt != null) {
+            throw new BadRequestException("이미 삭제된 클럽-경기장 매핑입니다. id=" + this.id);
+        }
     }
 }

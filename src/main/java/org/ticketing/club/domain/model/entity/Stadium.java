@@ -2,7 +2,6 @@ package org.ticketing.club.domain.model.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
-import org.ticketing.club.domain.exception.StadiumAlreadyDeletedException;
 import org.ticketing.common.domain.BaseEntity;
 import org.ticketing.common.exception.BadRequestException;
 import org.ticketing.club.domain.model.vo.Address;
@@ -65,7 +64,7 @@ public class Stadium extends BaseEntity {
 
     private void ensureNotDeleted() {
         if (this.deletedAt != null) {
-            throw new StadiumAlreadyDeletedException(this.id);
+            throw new BadRequestException("이미 삭제된 경기장입니다. id=" + this.id);
         }
     }
 }

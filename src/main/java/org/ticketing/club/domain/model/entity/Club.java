@@ -3,6 +3,7 @@ package org.ticketing.club.domain.model.entity;
 import jakarta.persistence.*;
 import lombok.*;
 import org.ticketing.club.domain.exception.*;
+import org.ticketing.club.domain.model.enums.ClubStadiumRole;
 import org.ticketing.common.domain.BaseEntity;
 import org.ticketing.common.exception.BadRequestException;
 
@@ -65,6 +66,16 @@ public class Club extends BaseEntity {
         super.delete(deletedBy);
     }
 
+    public ClubStadium addStadium(Stadium stadium, ClubStadiumRole role) {
+        ensureNotDeleted();
+        return ClubStadium.create(this, stadium, role);
+    }
+
+    public void removeStadium(ClubStadium clubStadium, String deletedBy) {
+        ensureNotDeleted();
+        clubStadium.delete(deletedBy);
+    }
+
     private static void validate(String clubName, UUID adminId) {
         if (clubName == null || clubName.isBlank()) {
             throw new BadRequestException("클럽명은 필수입니다");
@@ -79,7 +90,7 @@ public class Club extends BaseEntity {
 
     private void ensureNotDeleted() {
         if (this.deletedAt != null) {
-            throw new ClubAlreadyDeletedException(this.id);
+            throw new BadRequestException("이미 삭제된 클럽입니다. id=" + this.id);
         }
     }
 }

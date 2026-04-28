@@ -6,6 +6,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.web.bind.annotation.*;
+import org.ticketing.club.application.dto.command.DeleteClubCommand;
+import org.ticketing.club.application.dto.command.DeleteClubStadiumCommand;
 import org.ticketing.club.application.service.ClubApplicationService;
 import org.ticketing.club.presentation.dto.request.*;
 import org.ticketing.club.presentation.dto.response.ClubResponseDto;
@@ -25,14 +27,14 @@ public class ClubController {
     public ClubResponseDto createClub(
             @RequestBody CreateClubRequestDto request
     ) {
-        throw new UnsupportedOperationException("Not implemented yet");
+        return ClubResponseDto.from(clubService.createClub(request.toCommand()));
     }
 
     @GetMapping("/{clubId}")
     public ClubResponseDto getClub(
             @PathVariable UUID clubId
     ) {
-        throw new UnsupportedOperationException("Not implemented yet");
+        return ClubResponseDto.from(clubService.getClub(clubId));
     }
 
     @GetMapping
@@ -40,7 +42,8 @@ public class ClubController {
             @RequestParam(required = false) String keyword,
             @PageableDefault(size = 10, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable
     ) {
-        throw new UnsupportedOperationException("Not implemented yet");
+        return clubService.getClubs(keyword, pageable)
+                .map(ClubResponseDto::from);
     }
 
     @PatchMapping("/{clubId}/name")
@@ -48,7 +51,7 @@ public class ClubController {
             @PathVariable UUID clubId,
             @RequestBody UpdateClubNameRequestDto request
     ) {
-        throw new UnsupportedOperationException("Not implemented yet");
+        return ClubResponseDto.from(clubService.updateClubName(request.toCommand(clubId)));
     }
 
     @PatchMapping("/{clubId}/admin")
@@ -56,14 +59,15 @@ public class ClubController {
             @PathVariable UUID clubId,
             @RequestBody UpdateClubAdminRequestDto request
     ) {
-        throw new UnsupportedOperationException("Not implemented yet");
+        return ClubResponseDto.from(clubService.updateClubAdmin(request.toCommand(clubId)));
     }
 
     @DeleteMapping("/{clubId}")
     public void deleteClub(
-            @PathVariable UUID clubId
+            @PathVariable UUID clubId,
+            @RequestParam UUID userId // 임시 추가(삭제를 수행하는 유저 ID)
     ) {
-        throw new UnsupportedOperationException("Not implemented yet");
+        clubService.deleteClub(new DeleteClubCommand(clubId, userId));
     }
 
     @PostMapping("/{clubId}/stadiums")
@@ -71,19 +75,22 @@ public class ClubController {
             @PathVariable UUID clubId,
             @RequestBody CreateClubStadiumRequestDto request
     ) {
-        throw new UnsupportedOperationException("Not implemented yet");
+        return ClubStadiumResponseDto.from(clubService.addStadium(request.toCommand(clubId)));
     }
 
     @DeleteMapping("/{clubId}/stadiums/{stadiumId}")
     public void removeStadium(
             @PathVariable UUID clubId,
-            @PathVariable UUID stadiumId
+            @PathVariable UUID stadiumId,
+            @RequestParam UUID userId
     ) {
-        throw new UnsupportedOperationException("Not implemented yet");
+        clubService.removeStadium(new DeleteClubStadiumCommand(clubId, stadiumId, userId));
     }
 
     @GetMapping("/{clubId}/stadiums")
     public List<ClubStadiumResponseDto> getClubStadiums(@PathVariable UUID clubId) {
-        throw new UnsupportedOperationException("Not implemented yet");
+        return clubService.getClubStadiums(clubId).stream()
+                .map(ClubStadiumResponseDto::from)
+                .toList();
     }
 }
