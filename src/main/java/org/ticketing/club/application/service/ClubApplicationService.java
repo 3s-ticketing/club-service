@@ -1,6 +1,7 @@
 package org.ticketing.club.application.service;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -45,7 +46,11 @@ public class ClubApplicationService {
                 command.adminId()
         );
 
-        return ClubResult.from(clubRepository.save(club));
+        try {
+            return ClubResult.from(clubRepository.save(club));
+        } catch (DataIntegrityViolationException e) {
+            throw new DuplicateClubNameException(command.clubName());
+        }
     }
 
     @Transactional(readOnly = true)
@@ -66,11 +71,19 @@ public class ClubApplicationService {
         Club club = clubRepository.findById(command.clubId())
                 .orElseThrow(() -> new ClubNotFoundException(command.clubId()));
 
-        if (clubRepository.existsByClubName(command.clubName())) {
+        if (!club.getClubName().equals(command.clubName()) &&
+                clubRepository.existsByClubName(command.clubName())) {
             throw new DuplicateClubNameException(command.clubName());
         }
 
         club.changeClubName(command.clubName());
+
+        try {
+            // JPA dirty checking -> flush 시점에 UPDATE 실행됨
+            clubRepository.flush();
+        } catch (DataIntegrityViolationException e) {
+            throw new DuplicateClubNameException(command.clubName());
+        }
 
         return ClubResult.from(club);
     }

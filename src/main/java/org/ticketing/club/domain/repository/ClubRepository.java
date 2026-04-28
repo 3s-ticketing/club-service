@@ -18,4 +18,6 @@ public interface ClubRepository {
     boolean existsById(UUID id);
 
     Page<Club> findAll(String keyword, Pageable pageable);
+
+    void flush();
 }

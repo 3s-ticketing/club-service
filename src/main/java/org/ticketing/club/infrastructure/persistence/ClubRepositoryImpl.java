@@ -39,4 +39,9 @@ public class ClubRepositoryImpl implements ClubRepository {
     public Page<Club> findAll(String keyword, Pageable pageable) {
         return jpaClubRepository.searchClubs(keyword, pageable);
     }
+
+    @Override
+    public void flush() {
+        jpaClubRepository.flush();
+    }
 }
