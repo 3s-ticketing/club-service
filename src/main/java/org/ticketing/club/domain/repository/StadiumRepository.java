@@ -18,4 +18,6 @@ public interface StadiumRepository {
     boolean existsByName(String name);
 
     Page<Stadium> findAll(String keyword, Pageable pageable);
+
+    void flush();
 }

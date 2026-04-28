@@ -1,6 +1,7 @@
 package org.ticketing.club.application.service;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -8,7 +9,9 @@ import org.springframework.transaction.annotation.Transactional;
 import org.ticketing.club.application.dto.command.CreateStadiumCommand;
 import org.ticketing.club.application.dto.command.DeleteStadiumCommand;
 import org.ticketing.club.application.dto.command.UpdateStadiumCommand;
+import org.ticketing.club.application.dto.result.ClubResult;
 import org.ticketing.club.application.dto.result.StadiumResult;
+import org.ticketing.club.domain.exception.DuplicateClubNameException;
 import org.ticketing.club.domain.exception.DuplicateStadiumNameException;
 import org.ticketing.club.domain.exception.StadiumNotFoundException;
 import org.ticketing.club.domain.model.entity.Stadium;
@@ -33,7 +36,11 @@ public class StadiumApplicationService {
                 command.address()
         );
 
-        return StadiumResult.from(stadiumRepository.save(stadium));
+        try {
+            return StadiumResult.from(stadiumRepository.save(stadium));
+        } catch (DataIntegrityViolationException e) {
+            throw new DuplicateClubNameException(command.name());
+        }
     }
 
     @Transactional
@@ -50,6 +57,12 @@ public class StadiumApplicationService {
                 command.name(),
                 command.address()
         );
+
+        try {
+            stadiumRepository.flush();
+        } catch (DataIntegrityViolationException e) {
+            throw new DuplicateClubNameException(command.name());
+        }
 
         return StadiumResult.from(stadium);
     }

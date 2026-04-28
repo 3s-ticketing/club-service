@@ -40,4 +40,9 @@ public class StadiumRepositoryImpl implements StadiumRepository {
     public Page<Stadium> findAll(String keyword, Pageable pageable) {
         return jpaStadiumRepository.searchStadiums(keyword, pageable);
     }
+
+    @Override
+    public void flush() {
+        jpaStadiumRepository.flush();
+    }
 }
