@@ -62,7 +62,7 @@ public class ClubStadium extends BaseEntity {
 
     private void ensureNotDeleted() {
         if (this.deletedAt != null) {
-            throw new BadRequestException("이미 삭제된 클럽입니다. id=" + this.id);
+            throw new BadRequestException("이미 삭제된 클럽-경기장 매핑입니다. id=" + this.id);
         }
     }
 }
