@@ -2,6 +2,7 @@ package org.ticketing.club.infrastructure.provider;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
+import org.ticketing.club.domain.exception.UserNotFoundException;
 import org.ticketing.club.domain.service.UserProvider;
 import org.ticketing.club.infrastructure.client.UserClient;
 import org.ticketing.club.infrastructure.client.dto.UserExistsResponse;
@@ -18,6 +19,11 @@ public class UserProviderImpl implements UserProvider {
     public boolean existsById(UUID userId) {
         UserExistsResponse response = userClient.existsById(userId);
 
-        return response != null && Boolean.TRUE.equals(response.data());
+        if(response == null || !response.success() || response.data() == null) {
+            throw new IllegalStateException("user-service 응답이 비정상입니다. traceId=" +
+                    (response != null ? response.traceId() : "null"));
+        }
+
+        return response.data();
     }
 }
