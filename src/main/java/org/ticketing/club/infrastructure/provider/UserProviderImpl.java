@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.ticketing.club.domain.service.UserProvider;
 import org.ticketing.club.infrastructure.client.UserClient;
+import org.ticketing.club.infrastructure.client.dto.UserExistsResponse;
 
 import java.util.UUID;
 
@@ -15,6 +16,8 @@ public class UserProviderImpl implements UserProvider {
 
     @Override
     public boolean existsById(UUID userId) {
-        return userClient.existsById(userId);
+        UserExistsResponse response = userClient.existsById(userId);
+
+        return response != null && Boolean.TRUE.equals(response.data());
     }
 }
