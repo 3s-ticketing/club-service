@@ -40,5 +40,5 @@ jobs:
       - name: Run tests
         env:
           GPR_USER: ${{ secrets.GPR_USER }}
-          GPR_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GPR_TOKEN: ${{ secrets.GPR_TOKEN }}
         run: ./gradlew clean test
