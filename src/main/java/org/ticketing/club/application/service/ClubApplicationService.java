@@ -1,0 +1,156 @@
+package org.ticketing.club.application.service;
+
+import lombok.RequiredArgsConstructor;
+import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.ticketing.club.application.dto.command.*;
+import org.ticketing.club.application.dto.result.ClubResult;
+import org.ticketing.club.application.dto.result.ClubStadiumResult;
+import org.ticketing.club.domain.exception.*;
+import org.ticketing.club.domain.model.entity.Club;
+import org.ticketing.club.domain.model.entity.ClubStadium;
+import org.ticketing.club.domain.model.entity.Stadium;
+import org.ticketing.club.domain.repository.ClubRepository;
+import org.ticketing.club.domain.repository.ClubStadiumRepository;
+import org.ticketing.club.domain.repository.StadiumRepository;
+import org.ticketing.club.domain.service.UserProvider;
+import org.ticketing.common.exception.BadRequestException;
+
+import java.util.List;
+import java.util.UUID;
+
+@Service
+@RequiredArgsConstructor
+public class ClubApplicationService {
+
+    private final ClubRepository clubRepository;
+    private final StadiumRepository stadiumRepository;
+    private final ClubStadiumRepository clubStadiumRepository;
+    private final UserProvider userProvider;
+
+    @Transactional
+    public ClubResult createClub(CreateClubCommand command) {
+        if (clubRepository.existsByClubName(command.clubName())) {
+            throw new DuplicateClubNameException(command.clubName());
+        }
+
+        if(!userProvider.existsById(command.adminId())) {
+            throw new UserNotFoundException(command.adminId());
+        }
+
+        Club club = Club.create(
+                command.clubName(),
+                command.adminId()
+        );
+
+        try {
+            return ClubResult.from(clubRepository.save(club));
+        } catch (DataIntegrityViolationException e) {
+            throw new DuplicateClubNameException(command.clubName());
+        }
+    }
+
+    @Transactional(readOnly = true)
+    public ClubResult getClub(UUID clubId) {
+        Club club = clubRepository.findById(clubId)
+                .orElseThrow(() -> new ClubNotFoundException(clubId));
+        return ClubResult.from(club);
+    }
+
+    @Transactional(readOnly = true)
+    public Page<ClubResult> getClubs(String keyword, Pageable pageable) {
+        return clubRepository.findAll(keyword, pageable)
+                .map(ClubResult::from);
+    }
+
+    @Transactional
+    public ClubResult updateClubName(UpdateClubNameCommand command) {
+        Club club = clubRepository.findById(command.clubId())
+                .orElseThrow(() -> new ClubNotFoundException(command.clubId()));
+
+        if (!club.getClubName().equals(command.clubName()) &&
+                clubRepository.existsByClubName(command.clubName())) {
+            throw new DuplicateClubNameException(command.clubName());
+        }
+
+        club.changeClubName(command.clubName());
+
+        try {
+            // JPA dirty checking -> flush 시점에 UPDATE 실행됨
+            clubRepository.flush();
+        } catch (DataIntegrityViolationException e) {
+            throw new DuplicateClubNameException(command.clubName());
+        }
+
+        return ClubResult.from(club);
+    }
+
+    @Transactional
+    public ClubResult updateClubAdmin(UpdateClubAdminCommand command) {
+        Club club = clubRepository.findById(command.clubId())
+                .orElseThrow(() -> new ClubNotFoundException(command.clubId()));
+
+        if (!userProvider.existsById(command.adminId())) {
+            throw new UserNotFoundException(command.adminId());
+        }
+
+        club.changeAdmin(command.adminId());
+
+        return ClubResult.from(club);
+    }
+
+    @Transactional
+    public void deleteClub(DeleteClubCommand command) {
+        Club club = clubRepository.findById(command.clubId())
+                .orElseThrow(() -> new ClubNotFoundException(command.clubId()));
+
+        club.deleteClub(command.deletedBy().toString());
+    }
+
+    @Transactional(readOnly = true)
+    public boolean existsById(UUID clubId) {
+        return clubRepository.existsById(clubId);
+    }
+
+    @Transactional
+    public ClubStadiumResult addStadium(CreateClubStadiumCommand command) {
+        Club club = clubRepository.findById(command.clubId())
+                .orElseThrow(() -> new ClubNotFoundException(command.clubId()));
+
+        Stadium stadium = stadiumRepository.findById(command.stadiumId())
+                .orElseThrow(() -> new StadiumNotFoundException(command.stadiumId()));
+
+        if (clubStadiumRepository.existsByClubIdAndStadiumId(command.clubId(), command.stadiumId())) {
+            throw new DuplicateClubStadiumMappingException();
+        }
+
+        ClubStadium clubStadium = club.addStadium(stadium, command.role());
+
+        return ClubStadiumResult.from(clubStadiumRepository.save(clubStadium));
+    }
+
+    @Transactional(readOnly = true)
+    public List<ClubStadiumResult> getClubStadiums(UUID clubId) {
+        if (!clubRepository.existsById(clubId)) {
+            throw new ClubNotFoundException(clubId);
+        }
+
+        return clubStadiumRepository.findAllByClubId(clubId).stream()
+                .map(ClubStadiumResult::from)
+                .toList();
+    }
+
+    @Transactional
+    public void removeStadium(DeleteClubStadiumCommand command) {
+        Club club = clubRepository.findById(command.clubId())
+                .orElseThrow(() -> new ClubNotFoundException(command.clubId()));
+
+        ClubStadium clubStadium = clubStadiumRepository.findByClubIdAndStadiumId(command.clubId(), command.stadiumId())
+                .orElseThrow(() -> new ClubStadiumNotFoundException(command.clubId(), command.stadiumId()));
+
+        club.removeStadium(clubStadium, command.deletedBy().toString());
+    }
+}
